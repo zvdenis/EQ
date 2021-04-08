@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -88,6 +89,8 @@ public class LoginTabFragment extends Fragment {
                 this::loginResponse,
                 error -> {
                     progressOverlay.setVisibility(View.INVISIBLE);
+                    Toast toast = Toast.makeText(getContext(), "Something went wrong" + error.toString(), Toast.LENGTH_LONG);
+                    toast.show();
                 });
     }
 
@@ -104,12 +107,8 @@ public class LoginTabFragment extends Fragment {
         Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
 
-        RequestController.getInstance(getContext()).sendMyQueuesRequest(myQueuesResponse -> {
 
-                }, error -> {
-
-                }
-        );
+        RequestController.getInstance(getContext()).updateMyQueues();
     }
 
     public void forgotPasswordClicked(View view) {

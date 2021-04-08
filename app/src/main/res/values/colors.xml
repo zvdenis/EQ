@@ -15,4 +15,12 @@
     <color name="old_geranium">#cf6a87</color>
     <color name="deep_rose">#c44569</color>
     <color name="swan_wight">#f7f1e3</color>
+    <color name="background_white">#E7F0FF</color>
+    <color name="background_white2">#FBFCFF</color>
+    <color name="front_white">#FAFCFF</color>
+    <color name="good_green">#10C176</color>
+    <color name="gray_porcelain">#84817a</color>
+    <color name="text_gray">#7D7D7F</color>
+    <color name="light_pink">#E8C1CE</color>
+
 </resources>

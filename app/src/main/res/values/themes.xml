@@ -22,5 +22,14 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:color">@color/white</item>
     </style>
+    <style name="Widget.MyApp.BottomSheet.Modal" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="behavior_skipCollapsed">true</item>
+        <item name="behavior_fitToContents">true</item>
+        <item name="behavior_peekHeight">1000dp</item> // yep, that helped to skip collapsed state at initial
+        <item name="behavior_hideable">true</item>
+    </style>
 
+    <style name="Theme.MyApp.BottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.MyApp.BottomSheet.Modal</item>
+    </style>
 </resources>

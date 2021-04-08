@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/background_white"
     tools:context=".Menu.MainMenuLeftFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,31 +12,80 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
 
+        android:background="@color/front_white"
+        android:elevation="10dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
-        app:layout_constraintHeight_percent=".1"
+        app:layout_constraintHeight_percent=".05"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0"></androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintVertical_bias="0">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current queues"
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_percent=".5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent=".5" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
 
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
 
-        app:layout_constraintHeight_percent=".8"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent=".9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/constraint1"
         app:layout_constraintVertical_bias="0">
 
+
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/recycler_view"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"
+            android:paddingBottom="50dp"
+            android:clipToPadding="false"/>
+
+
+        <LinearLayout
+            android:id="@+id/empty_list_image"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@id/recycler_view"
+            app:layout_constraintHeight_percent=".3"
+            app:layout_constraintTop_toTopOf="@id/recycler_view"
+            app:layout_constraintVertical_bias=".1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:text="Looks like you can have a rest" />
+
+            <ImageView
+
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:scaleType="fitCenter"
+                android:scaleX="1"
+                android:scaleY="1"
+                android:src="@drawable/ic_rest" />
+        </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
