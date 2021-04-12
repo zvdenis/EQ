@@ -23,7 +23,7 @@ public class MainMenuLeftFragment extends Fragment {
 
     private static boolean b = true;
     RecyclerView recyclerView;
-    RecyclerAdapter adapter;
+    MyQueuesRecyclerAdapter adapter;
     LinearLayout emptyListImage;
 
     @Override
@@ -33,7 +33,7 @@ public class MainMenuLeftFragment extends Fragment {
         recyclerView = root.findViewById(R.id.recycler_view);
         emptyListImage = root.findViewById(R.id.empty_list_image);
         updateEmptyListImage();
-        adapter = new RecyclerAdapter(getContext());
+        adapter = new MyQueuesRecyclerAdapter(getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         if(b) {

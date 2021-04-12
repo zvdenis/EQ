@@ -11,5 +11,11 @@
     <string name="available_q_number">Available Q-No</string>
     <string name="your_number">Your Q-No</string>
     <string name="join">join</string>>
-    <string name="leave">leave</string>>
+    <string name="leave">leave</string>
+    <string name="channel_name">Queue notification</string>
+    <string name="channel_description">Notification about queue number, time left and other</string>
+    <string name="admin_queues_count">queues active</string>
+    <string name="people_waiting_text">" people waiting"</string>
+    <string name="next_string">next</string>
+    >
 </resources>

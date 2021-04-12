@@ -53,7 +53,7 @@
             app:layout_constraintVertical_bias="1">
 
             <TextView
-                android:id="@+id/code_text"
+                android:id="@+id/title_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="60dp"
@@ -78,19 +78,19 @@
                 app:layout_constraintHorizontal_bias=".5"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/code_text"
+                app:layout_constraintTop_toBottomOf="@id/title_text"
                 app:layout_constraintWidth_percent=".7" />
 
 
             <TextView
                 android:id="@+id/description"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="60dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
-                android:lines="6"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam quis aliquam purus. Sed non velit eu lorem pretium auctor eu pellentesque lorem. Fusce blandit orci vitae nibh pharetra rhoncus. Aliquam scelerisque bibendum libero at pulvinar. Phasellus viverra erat iaculis auctor rhoncus. Proin sit amet tempus nunc. Vivamus in metus elit. Cras porttitor nec sem id rutrum. Sed bibendum nisl ut arcu pretium pellentesque. Duis condimentum augue quam, eu finibus enim rhoncus tempus. Vivamus sed auctor augue, vel rhoncus ligula. Sed nunc lorem, rutrum quis neque id, faucibus sagittis velit. Suspendisse ullamcorper ligula ut rutrum aliquam. Vivamus a aliquam elit, a tempus urna. "
+                android:maxLines="6"
+                android:text="  Sed non velit eu b m quis neque id, faucibus sagittis velit. Suspendisse ullamcorper ligula ut rutrum aliquam. Vivamus a aliquam elit, a tempus urna. "
                 android:textColor="@color/text_gray"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -125,7 +125,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/line2"
-                app:layout_constraintVertical_bias=".2"
+                app:layout_constraintVertical_bias=".4"
                 app:layout_constraintWidth_percent=".7">
 
                 <TextView

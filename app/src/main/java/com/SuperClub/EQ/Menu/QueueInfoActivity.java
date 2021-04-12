@@ -20,6 +20,8 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
+import es.dmoral.toasty.Toasty;
+
 
 public class QueueInfoActivity extends AppCompatActivity {
 
@@ -43,7 +45,7 @@ public class QueueInfoActivity extends AppCompatActivity {
         queueInfo = instance.passedQueue;
         setContentView(R.layout.activity_queue_info);
         String id = getIntent().getStringExtra("QueueID");
-        title = findViewById(R.id.code_text);
+        title = findViewById(R.id.title_text);
         description = findViewById(R.id.description);
         number = findViewById(R.id.number);
         button = findViewById(R.id.button);
@@ -61,22 +63,28 @@ public class QueueInfoActivity extends AppCompatActivity {
 
 
     public void updateText() {
+        QueueInfo realQueue = null;
+        isMyQueue = false;
         for (QueueInfo queue : instance.myQueues) {
-            if (queue == queueInfo) {
+            if (queue.id.equals(queueInfo.id)) {
                 isMyQueue = true;
+                realQueue = queue;
             }
         }
         description.setText(queueInfo.description);
         title.setText(queueInfo.title);
-        number.setText(queueInfo.usersBeforeMe);
         if (isMyQueue) {
             button.setOnClickListener(this::leave);
             button.setBackgroundResource(R.drawable.button_red_bg2);
+            button.setText(R.string.leave);
             numberTitle.setText(R.string.your_number);
+            number.setText(String.valueOf(realQueue.usersBeforeMe + 1));
         } else {
             button.setOnClickListener(this::subscribe);
             button.setBackgroundResource(R.drawable.button_bg2);
+            button.setText(R.string.join);
             numberTitle.setText(R.string.available_q_number);
+            number.setText(String.valueOf(queueInfo.usersBeforeMe + 1));
         }
 
     }
@@ -90,22 +98,22 @@ public class QueueInfoActivity extends AppCompatActivity {
 
     public void onResponseSubscribe(JSONObject response) {
         QueueInfo queue = new Gson().fromJson(response.toString(), QueueInfo.class);
+        queueInfo = queue;
         instance.myQueues.add(queue);
         instance.queuesChanged();
         updateText();
         progressOverlay.setVisibility(View.INVISIBLE);
+        Toasty.success(this, "You joined queue").show();
     }
 
 
     public void onErrorResponseSubscribe(VolleyError error) {
         progressOverlay.setVisibility(View.INVISIBLE);
-        Toast toast = Toast.makeText(this, "Something went wrong" + error.toString(), Toast.LENGTH_LONG);
-        toast.show();
+        Toasty.error(this, "Failed to leave queue").show();
     }
 
 
     public void leave(View v) {
-
         progressOverlay.setVisibility(View.VISIBLE);
         RequestController.getInstance(this).sendLeaveQueueRequest(queueInfo.id, this::onResponseLeave, this::onErrorResponseLeave);
     }
@@ -116,13 +124,12 @@ public class QueueInfoActivity extends AppCompatActivity {
         instance.queuesChanged();
         updateText();
         progressOverlay.setVisibility(View.INVISIBLE);
+        Toasty.success(this, "You left the queue").show();
     }
 
 
     public void onErrorResponseLeave(VolleyError error) {
-
-        Toast toast = Toast.makeText(this, "Something went wrong" + error.toString(), Toast.LENGTH_LONG);
-        toast.show();
         progressOverlay.setVisibility(View.INVISIBLE);
+        Toasty.error(this, "Failed to leave queue").show();
     }
 }

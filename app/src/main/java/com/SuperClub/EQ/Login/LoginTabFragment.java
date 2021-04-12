@@ -28,6 +28,10 @@ import com.github.ybq.android.spinkit.style.Wave;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+
+import es.dmoral.toasty.Toasty;
+
 public class LoginTabFragment extends Fragment {
 
 
@@ -89,16 +93,24 @@ public class LoginTabFragment extends Fragment {
                 this::loginResponse,
                 error -> {
                     progressOverlay.setVisibility(View.INVISIBLE);
-                    Toast toast = Toast.makeText(getContext(), "Something went wrong" + error.toString(), Toast.LENGTH_LONG);
-                    toast.show();
+                    String body = null;
+                    try {
+                        body = new String(error.networkResponse.data, "UTF-8");
+                        JSONObject jsonObject = new JSONObject(body);
+                        Toasty.warning(getContext(), jsonObject.getString("message")).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toasty.error(getContext(), "Connection error").show();
+                    }
                 });
     }
 
     private void loginResponse(JSONObject response) {
-        Application.getInstance(getContext()).setEmail(login.getText().toString());
         Application.getInstance(getContext()).setPassword(password.getText().toString());
         try {
+            Application.getInstance(getContext()).setEmail(response.get("email").toString());
             Application.getInstance(getContext()).setToken(response.get("token").toString());
+            Application.getInstance(getContext()).setName(response.get("name").toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

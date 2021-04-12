@@ -7,7 +7,6 @@ import com.SuperClub.EQ.Application.Configs;
 import com.SuperClub.EQ.Data.QueueInfo;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -17,16 +16,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import static com.SuperClub.EQ.Application.Configs.fullFormat;
+
 public class RequestController {
 
-    private static String baseURL = "http://192.168.0.1/";
-    private Application applicationInstance;
+    private static String baseURL = "http://192.168.43.31:8080/";
+
+    public Application getApplicationInstance() {
+        return Application.getInstance(context);
+    }
+
 
     static {
         if (Configs.isTestMode) {
@@ -38,9 +42,14 @@ public class RequestController {
     private static String registerURL = baseURL + "register/";
     private static String createLiveQURL = baseURL + "createQueue/live/";
     private static String myQueuesURL = baseURL + "myQueues/";
+    private static String adminQueuesURL = baseURL + "myAdminsQueues/";
     private static String registerForQueueURL = baseURL + "registerForQueue/";
     private static String leaveQueueURL = baseURL + "leaveQueue/";
     private static String getQueueByCodeURL = baseURL + "getQueueByCode/";
+    private static String nextUserURL = baseURL + "next/";
+    private static String updateUserURL = baseURL + "updateUser/";
+    private static String offlineUserURL = baseURL + "registerWithoutQueue/";
+    private static String peopleInQueueURL = baseURL + "queueUsers/";
 
     static {
         if (Configs.isTestMode) {
@@ -55,7 +64,6 @@ public class RequestController {
     private RequestController(Context context) {
 
         this.context = context;
-        applicationInstance = Application.getInstance(context);
     }
 
     public static RequestController getInstance(Context context) {
@@ -95,11 +103,12 @@ public class RequestController {
     public void sendRegisterForQueueRequest(String qID, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         JSONObject postData = new JSONObject();
         try {
-            postData.put("token", applicationInstance.getToken());
+            postData.put("token", getApplicationInstance().getToken());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, registerURL + qID.toString(), postData, listener, errorListener);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, registerForQueueURL + qID.toString(), postData, listener, errorListener);
 
         VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
@@ -107,7 +116,7 @@ public class RequestController {
     public void sendLeaveQueueRequest(String qID, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         JSONObject postData = new JSONObject();
         try {
-            postData.put("token", applicationInstance.getToken());
+            postData.put("token", getApplicationInstance().getToken());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -120,7 +129,7 @@ public class RequestController {
     public void sendMyQueuesRequest(Response.Listener<JSONArray> listener, Response.ErrorListener errorListener) {
         JSONObject postData = new JSONObject();
         try {
-            postData.put("token", applicationInstance.getToken());
+            postData.put("token", getApplicationInstance().getToken());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -129,6 +138,17 @@ public class RequestController {
         VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
 
+    public void sendAdminQueuesRequest(Response.Listener<JSONArray> listener, Response.ErrorListener errorListener) {
+        JSONObject postData = new JSONObject();
+        try {
+            postData.put("token", getApplicationInstance().getToken());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        CustomJsonArrayRequest jsonObjectRequest = new CustomJsonArrayRequest(Request.Method.POST, adminQueuesURL, postData, listener, errorListener);
+
+        VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
 
     public void updateMyQueues() {
 
@@ -136,7 +156,17 @@ public class RequestController {
             Type itemListType = new TypeToken<List<QueueInfo>>() {
             }.getType();
             ArrayList<QueueInfo> queues = new Gson().fromJson(response.toString(), itemListType);
-            applicationInstance.setMyQueues(queues);
+            getApplicationInstance().setMyQueues(queues);
+        }, error -> {
+            System.out.println();
+        });
+
+
+        sendAdminQueuesRequest(response -> {
+            Type itemListType = new TypeToken<List<QueueInfo>>() {
+            }.getType();
+            ArrayList<QueueInfo> queues = new Gson().fromJson(response.toString(), itemListType);
+            getApplicationInstance().setAdminQueues(queues);
         }, error -> {
             System.out.println();
         });
@@ -144,15 +174,15 @@ public class RequestController {
 
     public void sendCreateQueueRequest(String title, String description, Date start, Date end, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         JSONObject postData = new JSONObject();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC+3"));
+        //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z");
+        fullFormat.setTimeZone(TimeZone.getTimeZone("UTC+3"));
         try {
-            postData.put("token", applicationInstance.getToken());
+            postData.put("token", getApplicationInstance().getToken());
             postData.put("title", title);
             postData.put("description", description);
             postData.put("maxUsers", 1000);
-            postData.put("dateStart", dateFormat.format(start));
-            postData.put("dateEnd", dateFormat.format(end));
+            postData.put("dateStart", fullFormat.format(start));
+            postData.put("dateEnd", fullFormat.format(end));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -162,9 +192,68 @@ public class RequestController {
     }
 
 
-    public void sendQueueByCodeRequest(String code, Response.Listener<JSONArray> listener, Response.ErrorListener errorListener) {
+    public void sendQueueByCodeRequest(String code, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         JSONObject postData = new JSONObject();
-        CustomJsonArrayRequest jsonObjectRequest = new CustomJsonArrayRequest(Request.Method.POST, getQueueByCodeURL + code, postData, listener, errorListener);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getQueueByCodeURL + code, postData, listener, errorListener);
+        VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
+
+    public void sendNextUserRequest(String queueID, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        JSONObject postData = new JSONObject();
+
+        try {
+            postData.put("token", getApplicationInstance().getToken());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, nextUserURL + queueID, postData, listener, errorListener);
+
+        VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
+
+    public void sendUpdateUserRequest(String email, String name, String password, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        JSONObject postData = new JSONObject();
+        try {
+            postData.put("email", email);
+            postData.put("password", password);
+            postData.put("name", name);
+            postData.put("token", getApplicationInstance().getToken());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, updateUserURL, postData, listener, errorListener);
+
+        VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
+
+    public void sendOfflineUserRequest(String queueID, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        JSONObject postData = new JSONObject();
+
+        try {
+            postData.put("token", getApplicationInstance().getToken());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, offlineUserURL + queueID, postData, listener, errorListener);
+
+        VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
+    }
+
+
+    public void sendPeopleInQueuesRequest(String qID, Response.Listener<JSONArray> listener, Response.ErrorListener errorListener) {
+        JSONObject postData = new JSONObject();
+        try {
+            postData.put("token", getApplicationInstance().getToken());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        CustomJsonArrayRequest jsonObjectRequest = new CustomJsonArrayRequest(Request.Method.POST, peopleInQueueURL + qID, postData, listener, errorListener);
+
         VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
 }

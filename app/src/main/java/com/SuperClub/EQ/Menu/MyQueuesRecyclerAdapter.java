@@ -15,12 +15,12 @@ import com.SuperClub.EQ.Application.Application;
 import com.SuperClub.EQ.Data.QueueInfo;
 import com.SuperClub.EQ.R;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
+public class MyQueuesRecyclerAdapter extends RecyclerView.Adapter<MyQueuesRecyclerAdapter.ViewHolder> {
 
 
     Context context;
 
-    RecyclerAdapter(Context context) {
+    public MyQueuesRecyclerAdapter(Context context) {
         this.context = context;
         Application.getInstance(context).addMyQueuesListener(() -> {
             notifyDataSetChanged();
@@ -30,21 +30,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @NonNull
     @Override
-    public RecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyQueuesRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.list_element, parent, false);
+        View view = layoutInflater.inflate(R.layout.my_queues_list_element, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyQueuesRecyclerAdapter.ViewHolder holder, int position) {
 
         QueueInfo queueInfo = Application.getInstance(context).myQueues.get(position);
         holder.textView.setText(queueInfo.title);
         holder.queueInfo = queueInfo;
-        holder.timeText.setText(queueInfo.expectedTime);
-        holder.sizeText.setText(queueInfo.usersBeforeMe);
+        holder.timeText.setText(queueInfo.getExpectedTime());
+        holder.sizeText.setText(String.valueOf(queueInfo.usersBeforeMe + 1));
     }
 
     @Override
@@ -62,10 +62,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.code_text);
+            textView = itemView.findViewById(R.id.title_text);
             layout = itemView.findViewById(R.id.element_layout);
-            timeText = itemView.findViewById(R.id.time_left_number);
-            sizeText = itemView.findViewById(R.id.queue_num);
+            timeText = itemView.findViewById(R.id.end_time_text);
+            sizeText = itemView.findViewById(R.id.start_time_text);
             layout.setOnClickListener(this);
         }
 

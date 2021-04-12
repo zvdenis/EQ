@@ -7,6 +7,8 @@
     <uses-feature android:name="android.hardware.type.watch" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -14,19 +16,37 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ElectronicQueue">
-
-
+        android:theme="@style/Theme.ElectronicQueue"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".Admin.PeopleInQueueActivity"></activity>
+        <activity android:name=".Menu.AccountInfoActivity" />
+        <activity android:name=".Menu.ScanQR" />
+        <activity android:name=".Admin.ShowQRActivity" />
+        <activity android:name=".Admin.AdminQueues" />
         <!--
                Set to true if your app is Standalone, that is, it does not require the handheld
                app to run.
         -->
+        <receiver
+            android:name=".Application.AlarmReciever"
+            android:exported="false" />
 
+        <activity
+            android:name=".Menu.ManageQueueActivity"
+            android:configChanges="orientation"
+            android:label="manage queue"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Menu.CreateQueueActivity"
             android:configChanges="orientation"
             android:label="@string/title_activity_create_queue"
+            android:noHistory="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,6 +68,7 @@
         <activity
             android:name=".Login.LoginActivity"
             android:configChanges="orientation"
+            android:noHistory="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
